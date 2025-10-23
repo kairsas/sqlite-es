@@ -121,9 +121,9 @@ where
 #[cfg(test)]
 mod test {
     use crate::testing::tests::{
-        Created, TEST_CONNECTION_STRING, TestAggregate, TestEvent, TestView, init_tables,
+        Created, TEST_CONNECTION_STRING, TestAggregate, TestEvent, TestView,
     };
-    use crate::{SqliteViewRepository, default_sqlite_pool};
+    use crate::{SqliteViewRepository, default_sqlite_pool, init_tables};
     use cqrs_es::persist::{ViewContext, ViewRepository};
 
     #[tokio::test]
@@ -131,7 +131,7 @@ mod test {
         let pool = default_sqlite_pool(TEST_CONNECTION_STRING).await;
         // we can use a tranditional wrapper around the `query!()` macro using files
 
-        init_tables(&pool).await;
+        init_tables(&pool).await.unwrap();
 
         let repo = SqliteViewRepository::<TestView, TestAggregate>::new("test_view", pool.clone());
         let test_view_id = uuid::Uuid::new_v4().to_string();

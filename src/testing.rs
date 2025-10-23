@@ -6,9 +6,7 @@ pub(crate) mod tests {
     use cqrs_es::{Aggregate, DomainEvent, EventEnvelope, View};
     use serde::{Deserialize, Serialize};
     use serde_json::Value;
-    use sqlx::{Pool, Sqlite};
     use std::fmt::{Display, Formatter};
-    use std::fs;
 
     #[derive(Debug, Serialize, Deserialize, PartialEq)]
     pub(crate) struct TestAggregate {
@@ -146,10 +144,5 @@ pub(crate) mod tests {
             current_sequence,
             current_snapshot,
         }
-    }
-
-    pub(crate) async fn init_tables(pool: &Pool<Sqlite>) {
-        let init_sql: String = fs::read_to_string("db/init.sql").unwrap();
-        sqlx::query(&init_sql).execute(pool).await.unwrap();
     }
 }
