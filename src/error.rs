@@ -30,10 +30,10 @@ impl From<sqlx::Error> for SqliteAggregateError {
         // TODO: improve error handling
         match &err {
             Error::Database(database_error) => {
-                if let Some(code) = database_error.code()
-                    && code.as_ref() == "1555"
-                {
-                    return SqliteAggregateError::OptimisticLock;
+                if let Some(code) = database_error.code() {
+                    if code.as_ref() == "1555" {
+                        return SqliteAggregateError::OptimisticLock;
+                    }
                 }
                 SqliteAggregateError::UnknownError(Box::new(err))
             }
