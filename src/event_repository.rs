@@ -345,16 +345,17 @@ mod test {
     use cqrs_es::persist::PersistedEventRepository;
 
     use crate::error::SqliteAggregateError;
+    use crate::init::init_tables;
     use crate::testing::tests::{
         Created, SomethingElse, TEST_CONNECTION_STRING, TestAggregate, TestEvent, Tested,
-        init_tables, snapshot_context, test_event_envelope,
+        snapshot_context, test_event_envelope,
     };
     use crate::{SqliteEventRepository, default_sqlite_pool};
 
     #[tokio::test]
     async fn event_repositories() {
         let pool = default_sqlite_pool(TEST_CONNECTION_STRING).await;
-        init_tables(&pool).await;
+        init_tables(&pool).await.unwrap();
         let id = uuid::Uuid::new_v4().to_string();
         let event_repo: SqliteEventRepository =
             SqliteEventRepository::new(pool.clone()).with_streaming_channel_size(1);
@@ -431,7 +432,7 @@ mod test {
     #[tokio::test]
     async fn snapshot_repositories() {
         let pool = default_sqlite_pool(TEST_CONNECTION_STRING).await;
-        init_tables(&pool).await;
+        init_tables(&pool).await.unwrap();
         let id = uuid::Uuid::new_v4().to_string();
         let event_repo: SqliteEventRepository = SqliteEventRepository::new(pool.clone());
         let snapshot = event_repo.get_snapshot::<TestAggregate>(&id).await.unwrap();
