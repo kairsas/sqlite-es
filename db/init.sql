@@ -1,5 +1,5 @@
 -- a single table is used for all events in the cqrs system
-CREATE TABLE events
+CREATE TABLE IF NOT EXISTS events
 (
     aggregate_type text                         NOT NULL,
     aggregate_id   text                         NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE events
 );
 
 -- this table is only needed if snapshotting is employed
-CREATE TABLE snapshots
+CREATE TABLE IF NOT EXISTS snapshots
 (
     aggregate_type   text                                 NOT NULL,
     aggregate_id     text                                 NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE snapshots
 
 -- one view table should be created for every `SqliteViewRepository` used
 -- replace name with the value used in `SqliteViewRepository::new(view_name: String)`
-CREATE TABLE test_view
+CREATE TABLE IF NOT EXISTS test_view
 (
     view_id text                        NOT NULL,
     version bigint CHECK (version >= 0) NOT NULL,
@@ -32,5 +32,5 @@ CREATE TABLE test_view
     PRIMARY KEY (view_id)
 );
 
-INSERT INTO events (aggregate_type, aggregate_id, sequence, event_type, event_version, payload, metadata)
+INSERT OR REPLACE INTO events (aggregate_type, aggregate_id, sequence, event_type, event_version, payload, metadata)
 VALUES ('Customer', 'previous_event_in_need_of_upcast', 1, 'NameAdded', '1.0', '{"NameAdded": {}}', '{}');
