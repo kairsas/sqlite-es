@@ -10,9 +10,9 @@
 pub use crate::cqrs::*;
 pub use crate::event_repository::*;
 pub use crate::init::*;
+pub use crate::testing::*;
 pub use crate::types::*;
 pub use crate::view_repository::*;
-pub use crate::testing::*;
 
 mod cqrs;
 mod error;
