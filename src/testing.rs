@@ -1,15 +1,14 @@
-#[cfg(test)]
-pub(crate) mod tests {
+#![allow(missing_docs)]
+pub mod tests {
     use crate::SqliteViewRepository;
     use async_trait::async_trait;
-    use cqrs_es::persist::{GenericQuery, SerializedEvent, SerializedSnapshot};
+    use cqrs_es::persist::GenericQuery;
     use cqrs_es::{Aggregate, DomainEvent, EventEnvelope, View};
     use serde::{Deserialize, Serialize};
-    use serde_json::Value;
     use std::fmt::{Display, Formatter};
 
     #[derive(Debug, Serialize, Deserialize, PartialEq)]
-    pub(crate) struct TestAggregate {
+    pub struct TestAggregate {
         pub(crate) id: String,
         pub(crate) description: String,
         pub(crate) tests: Vec<String>,
@@ -48,19 +47,19 @@ pub(crate) mod tests {
     }
 
     #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-    pub(crate) enum TestEvent {
+    pub enum TestEvent {
         Created(Created),
         Tested(Tested),
         SomethingElse(SomethingElse),
     }
 
     #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-    pub(crate) struct Created {
+    pub struct Created {
         pub id: String,
     }
 
     #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-    pub(crate) struct Tested {
+    pub struct Tested {
         pub test_name: String,
     }
 
@@ -84,10 +83,10 @@ pub(crate) mod tests {
     }
 
     #[derive(Debug, PartialEq)]
-    pub(crate) struct TestError(String);
+    pub struct TestError(String);
 
     #[derive(Debug)]
-    pub(crate) struct TestServices;
+    pub struct TestServices;
 
     impl Display for TestError {
         fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -97,14 +96,14 @@ pub(crate) mod tests {
 
     impl std::error::Error for TestError {}
 
-    pub(crate) enum TestCommand {}
+    pub enum TestCommand {}
 
-    pub(crate) type TestQueryRepository =
+    pub type TestQueryRepository =
         GenericQuery<SqliteViewRepository<TestView, TestAggregate>, TestView, TestAggregate>;
 
     #[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
-    pub(crate) struct TestView {
-        pub(crate) events: Vec<TestEvent>,
+    pub struct TestView {
+        pub events: Vec<TestEvent>,
     }
 
     impl View<TestAggregate> for TestView {
@@ -113,8 +112,15 @@ pub(crate) mod tests {
         }
     }
 
+    #[cfg(test)]
     pub(crate) const TEST_CONNECTION_STRING: &str = "sqlite::memory:";
 
+    #[cfg(test)]
+    use cqrs_es::persist::{SerializedEvent, SerializedSnapshot};
+    #[cfg(test)]
+    use serde_json::Value;
+
+    #[cfg(test)]
     pub(crate) fn test_event_envelope(
         id: &str,
         sequence: usize,
@@ -132,6 +138,7 @@ pub(crate) mod tests {
         }
     }
 
+    #[cfg(test)]
     pub(crate) fn snapshot_context(
         aggregate_id: String,
         current_sequence: usize,
