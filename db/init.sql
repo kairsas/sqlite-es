@@ -31,6 +31,3 @@ CREATE TABLE IF NOT EXISTS test_view
     payload json                        NOT NULL,
     PRIMARY KEY (view_id)
 );
-
-INSERT OR REPLACE INTO events (aggregate_type, aggregate_id, sequence, event_type, event_version, payload, metadata)
-VALUES ('Customer', 'previous_event_in_need_of_upcast', 1, 'NameAdded', '1.0', '{"NameAdded": {}}', '{}');
